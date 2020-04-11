@@ -1,4 +1,4 @@
-import pygame, random
+import pygame, random, sys
 from pygame.locals import *
 
 SCREEN_WIDTH = 400
@@ -124,7 +124,7 @@ while True:
     clock.tick(30)
     for event in pygame.event.get():
         if event.type == QUIT:
-            pygame.quit()
+            sys.exit()
 
         if event.type == KEYDOWN:
             if event.key == K_SPACE:
