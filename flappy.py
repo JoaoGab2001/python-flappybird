@@ -95,8 +95,14 @@ def get_random_pipes(xpos):
     pipe_inverted = Pipe(True, xpos, SCREEN_HEIGHT - size - PIPE_GAP)
     return (pipe, pipe_inverted)
 
+def plus_score(bird_sprite, pipe_sprite):
+    return pipe_sprite.rect[0] == ( bird_sprite.rect[0] - GAME_SPEED )
 
 pygame.init()
+FONT = pygame.font.Font('8-bit-pusab.ttf', 15)
+score_text = FONT.render('Score: 0', True, (255, 255, 0))
+
+
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 BACKGROUND = pygame.image.load('background-day.png')
@@ -117,8 +123,9 @@ for i in range(2):
     pipe_group.add(pipes[0])
     pipe_group.add(pipes[1])
 
-
 clock = pygame.time.Clock()
+current_pipe = 0
+current_score = 0
 
 while True:
     clock.tick(30)
@@ -138,6 +145,10 @@ while True:
         new_ground = Ground(GROUND_WIDTH - 20)
         ground_group.add(new_ground)
 
+    if plus_score(bird_group.sprites()[0], pipe_group.sprites()[0]):
+        current_score += 1
+        score_text = FONT.render('Score: '+str(current_score), False, (255, 255, 0))
+
     if is_off_screen(pipe_group.sprites()[0]):
         pipe_group.remove(pipe_group.sprites()[0])
         pipe_group.remove(pipe_group.sprites()[0])
@@ -155,10 +166,11 @@ while True:
     pipe_group.draw(screen)
     ground_group.draw(screen)
 
+
+    screen.blit(score_text, (10, 10))
     pygame.display.update()
 
     if (pygame.sprite.groupcollide(bird_group, ground_group, False, False, pygame.sprite.collide_mask) or
        pygame.sprite.groupcollide(bird_group, pipe_group, False, False, pygame.sprite.collide_mask)):
         # Game over
-        input()
         break
